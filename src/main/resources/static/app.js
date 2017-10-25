@@ -1,17 +1,31 @@
 var app = (function () {
 
-    var nombreJugador="NN";
-    
+    var nombreJugador = "NN";
+
     var stompClient = null;
     var gameid = 0;
 
+
     return {
+        //Datos del jugador
+        loadUser: function (userid) {
+            $.get("/hangmangames/" + userid,
+                    function (data) {
+                        nombreJugador = data.name;
+                        $("#photoUser").html("<div id = 'photoUser'><img src=" + data.photoUrl + "></img></div>");
+                        $("#nameUser").html("<div id= 'nameUser'> Nombre: " + data.name + "</div>");
+                    }
+            ).fail(
+                    function (data) {
+                        alert(data["responseText"]);
+                    }
+            );
+        },
+        loadWord: function (gameid1) {
 
-        loadWord: function () {
+            gameid = gameid1;
 
-            gameid = $("#gameid").val();
-            
-            $.get("/hangmangames/" + gameid +"/currentword",
+            $.get("/hangmangames/" + gameid + "/currentword",
                     function (data) {
                         $("#palabra").html("<h1>" + data + "</h1>");
                     }
@@ -19,69 +33,77 @@ var app = (function () {
                     function (data) {
                         alert(data["responseText"]);
                     }
-
             );
-
-
         }
         ,
         wsconnect: function () {
-
             var socket = new SockJS('/stompendpoint');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
-
                 console.log('Connected: ' + frame);
-
                 //subscriptions
-            
+                stompClient.subscribe("/topic/wupdate." + gameid, function (eventbody) {
+                    $("#palabra").html("<h1>" + eventbody.body + "</h1>");
+                });
+
+                stompClient.subscribe("/topic/winner." + gameid, function (eventbody) {
+                    $("#winner").html("<div id='winner'> Ganador: " + eventbody.body + "</div>");
+                    $("#estado").html("<div id='estado'> Estado: Finalizado </div>");
+                });
             });
-
-        },
-
+        }
+        ,
         sendLetter: function () {
-
+            
             var id = gameid;
 
-            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: "?????"};
+            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: nombreJugador};
 
-            console.info("Gameid:"+gameid+",Sending v2:"+JSON.stringify(hangmanLetterAttempt));
+            console.info("Gameid:" + gameid + ",Sending letter:" + JSON.stringify(hangmanLetterAttempt));
 
+            var pos = function () {
+                var r = jQuery.ajax({
+                    url: "/hangmangames/" + id + "/letterattempts",
+                    type: "POST",
+                    data: JSON.stringify(hangmanLetterAttempt),
+                    contentType: "application/json; charset=utf-8"
+                });
+                return r;
+            };
 
-            jQuery.ajax({
-                url: "/hangmangames/" + id + "/letterattempts",
-                type: "POST",
-                data: JSON.stringify(hangmanLetterAttempt),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function () {
-                    //
-                }
+            pos().then(function (tmp) {
+                stompClient.send("/topic/wupdate." + id, {}, tmp);        
             });
 
-
         },
-
         sendWord: function () {
             
-            var hangmanWordAttempt = {word: $("#adivina").val(), username: "??????"};
-            
             var id = gameid;
 
-            jQuery.ajax({
-                url: "/hangmangames/" + id + "/wordattempts",
-                type: "POST",
-                data: JSON.stringify(hangmanWordAttempt),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function () {
-                    //
+            var hangmanWordAttempt = {word: $("#adivina").val(), username: nombreJugador};
+            
+            console.info("Gameid:" + gameid + ",Sending word:" + JSON.stringify(hangmanWordAttempt));
+
+            var pos = function () {
+                var r = jQuery.ajax({
+                    url: "/hangmangames/" + id + "/wordattempts",
+                    type: "POST",
+                    data: JSON.stringify(hangmanWordAttempt),
+                    contentType: "application/json; charset=utf-8"
+                });
+                return r;
+            };
+            
+            pos().then(function (win) {
+                if(win){
+                    stompClient.send("/topic/winner." + id, {}, nombreJugador);
+                    $.get("/hangmangames/" + id + "/currentword",
+                    function (data) {
+                        stompClient.send("/topic/wupdate." + id, {}, data); 
+                    });
                 }
             });
-
-            
         }
-
     };
 
 })();

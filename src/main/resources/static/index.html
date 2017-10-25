@@ -36,23 +36,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <div class="centeredinput">
             Identificador del jugador: <input id="playerid" type="text"/><br>
-            <button onclick="">Consultar datos jugador</button>
+            <button onclick="app.loadUser($('#playerid').val())">Consultar datos jugador</button>
         </div>
         
         
         
         <div id="datosjugador" class="userdata">
-            <div>
+            <div id = "photoUser">
                 <img src="http://www.your3dsource.com/images/personsshadowthumb.jpg"/>
             </div>
-            <div>
+            <div id="nameUser">
                 Nombre:????      
             </div>             
         </div>
 
+        
         <div class="centeredinput">
             Identificador del Juego: <input id="gameid" type="number"/><br>
-            <button onclick="app.loadWord()">Ingresar a partida</button>
+            <button onclick="app.wsconnect();app.loadWord($('#gameid').val())">Ingresar a partida</button>
         </div>
         
         
@@ -61,10 +62,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         
         <div id="status">
-            <div>
+            <div id="estado">
                 Estado: En curso
             </div>
-            <div>
+            <div id="winner">
                 Ganador: Ninguno.            
             </div> 
            

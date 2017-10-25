@@ -52,6 +52,16 @@ public class HangmanGameResourcesController {
         return "Ok";
     }
     
+    //Datos del jugador
+    @RequestMapping(path = "/{userid}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUser(@PathVariable int userid){
+        try {    
+            return new ResponseEntity<>(gameServices.loadUserData(userid),HttpStatus.ACCEPTED);
+        } catch (GameServicesException ex) {
+            return new ResponseEntity<>(ex.getLocalizedMessage(),HttpStatus.NOT_FOUND);
+        }
+    }
+    
     @RequestMapping(path = "/{gameid}/currentword", method = RequestMethod.GET)
     public ResponseEntity<?> getCurrentWord(@PathVariable Integer gameid){
         try {    
@@ -68,9 +78,9 @@ public class HangmanGameResourcesController {
             String tmp =gameServices.addLetterToGame(gameid, hga.getLetter());
             
             LOG.log(Level.INFO, "Getting letter from client {0}:{1}", new Object[]{hga.getUsername(), hga.getLetter()});
-
-
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(tmp,HttpStatus.CREATED);
+            
+            
         } catch (GameServicesException ex) {
             Logger.getLogger(HangmanGameResourcesController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("No existe el juego",HttpStatus.FORBIDDEN); 
@@ -87,7 +97,7 @@ public class HangmanGameResourcesController {
             LOG.log(Level.INFO, "Getting word from client {0}:{1}", new Object[]{hwa.getUsername(), hwa.getWord()});
             
             
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(win,HttpStatus.CREATED);
         } catch (GameServicesException ex) {
             Logger.getLogger(HangmanGameResourcesController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("No existe el juego",HttpStatus.FORBIDDEN); 
