@@ -24,8 +24,11 @@ public class HangmanRedisGame extends HangmanGame{
         super(word);
         this.gameId = "game:"+gameId;
         this.template = template;
-        this.word = word;
+        this.word = (String)template.opsForHash().get(this.gameId, "completeWord");
+        System.out.println(this.word);
+        guessedWord=this.word.toCharArray();
     }
+    
     
     /**
      * @pre gameFinished==false
@@ -35,10 +38,7 @@ public class HangmanRedisGame extends HangmanGame{
     public String addLetter(char l){
         this.word = (String)template.opsForHash().get(gameId, "completeWord");
         System.out.println(this.word);
-        guessedWord=new char[word.length()];
-        for (int i=0;i<word.length();i++){
-            guessedWord[i]='_';
-        }
+        guessedWord=this.word.toCharArray();
         for (int i=0;i<word.length();i++){
             if (word.charAt(i)==l){
                 guessedWord[i]=l;
