@@ -44,7 +44,7 @@ public class HangmanRedisGame extends HangmanGame{
                 guessedWord[i]=l;
             }            
         }
-        template.opsForHash().put(gameId,new String(guessedWord),"discoveredWord");
+        template.opsForHash().put(gameId, "discoveredWord", new String(guessedWord));
         return new String(guessedWord);
     }
     
@@ -54,8 +54,8 @@ public class HangmanRedisGame extends HangmanGame{
             winner=playerName;
             gameFinished=true;
             guessedWord=word.toCharArray();
-            template.opsForHash().put(gameId,new String(guessedWord),"discoveredWord");
-            template.opsForHash().put(gameId,"ended","status");
+            template.opsForHash().put(gameId, "discoveredWord", new String(guessedWord));
+            template.opsForHash().put(gameId,"status","ended");
             return true;
         }
         return false;
