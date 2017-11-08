@@ -25,6 +25,10 @@ public class HangmanRedisGame extends HangmanGame{
         this.gameId = "game:"+gameId;
         this.template = template;
         this.word="";
+        guessedWord=new char[word.length()];
+        for (int i=0;i<word.length();i++){
+            guessedWord[i]='_';
+        }
     }
     
     /**
