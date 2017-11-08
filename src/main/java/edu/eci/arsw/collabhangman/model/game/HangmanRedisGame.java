@@ -25,7 +25,7 @@ public class HangmanRedisGame extends HangmanGame{
         this.gameId = "game:"+gameId;
         this.template = template;
         this.word = (String)template.opsForHash().get(this.gameId, "completeWord");
-        System.out.println(this.word);
+        String wordToGuess = (String)template.opsForHash().get(this.gameId, "discoveredWord");
         guessedWord=this.word.toCharArray();
     }
     
