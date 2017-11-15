@@ -61,9 +61,9 @@ public class GameServices {
         }
     }
     
-    public Set<User> getAllUsers(){
+    /*public Set<User> getAllUsers(){
         return usersRepository.getAllUsers();
-    }
+    }*/
     
     /**
      * Crea un nuevo juego, con una palabra creada al azar
