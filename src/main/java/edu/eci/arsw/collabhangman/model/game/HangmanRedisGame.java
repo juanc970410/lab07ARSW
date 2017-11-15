@@ -73,19 +73,18 @@ public class HangmanRedisGame extends HangmanGame {
         if (s.toLowerCase().equals(word)) {
             winner = playerName;
             gameFinished = true;
-
+            
             template.execute(new SessionCallback< List< Object>>() {
                 @SuppressWarnings("unchecked")
-
                 @Override
-
                 public < K, V> List<Object> execute(final RedisOperations< K, V> operations)
                         throws DataAccessException {
+                    
                     operations.watch((K) (gameId + " discoveredword"));
                     operations.multi();
                     guessedWord = word.toCharArray();
-                    template.opsForHash().put(gameId, "discoveredWord", new String(guessedWord));
-                    template.opsForHash().put(gameId, "status", "ended");
+                    operations.opsForHash().put((K)gameId, "discoveredWord", new String(guessedWord));
+                    operations.opsForHash().put((K)gameId, "status", "ended");
                     return operations.exec();
                 }
             });
