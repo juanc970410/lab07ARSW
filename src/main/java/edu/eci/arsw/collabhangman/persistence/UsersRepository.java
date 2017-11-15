@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  */
 public interface UsersRepository extends MongoRepository<User, Integer>{
 
-    public User getUserByID(Integer id) throws PersistenceException;   
+    public User findById(Integer id) throws PersistenceException;   
     
     //public Set<User> getAllUsers();
 }

@@ -55,7 +55,7 @@ public class GameServices {
     
     public User loadUserData(int userid) throws GameServicesException{
         try {
-            return usersRepository.getUserByID(userid);
+            return usersRepository.findById(userid);
         } catch (PersistenceException ex) {
             throw new GameServicesException("Error loading User Data:"+ex.getLocalizedMessage(),ex);
         }
