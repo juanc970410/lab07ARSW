@@ -3,7 +3,7 @@ spring:
      mongodb:
        host: ds029486.mlab.com
        port: 37101
-       database: arsw
+       database: hangman
        username: juan
        password: juan  
     redis:
