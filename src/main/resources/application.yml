@@ -1,11 +1,11 @@
 spring:
     data:
         mongodb:
-        host: ds029486.mlab.com
-        port: 29486
-        database: hangman
-        username: juan
-        password: juan  
+            host: ds029486.mlab.com
+            port: 29486
+            database: hangman
+            username: juan
+            password: juan  
     redis:
         host: 192.168.56.102
         port: 6379
