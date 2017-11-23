@@ -9,6 +9,7 @@ import edu.eci.arsw.collabhangman.model.game.entities.User;
 import java.io.Serializable;
 import java.util.Set;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,5 +20,6 @@ public interface UsersRepository extends MongoRepository<User, Integer>{
 
     public User findById(Integer id) throws PersistenceException;   
     
-    //public Set<User> getAllUsers();
+    @Query("{\"puntajes\": {\"$elemMatch\": {\"puntaje\": {\"$gte\": ?0}}}}")
+    public Set<User> getAllUsers(Integer puntaje) throws PersistenceException;
 }

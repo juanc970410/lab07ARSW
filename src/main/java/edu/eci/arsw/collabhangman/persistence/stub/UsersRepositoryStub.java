@@ -40,9 +40,9 @@ public class UsersRepositoryStub{
     }
 
     
-    /*public Set<User> getAllUsers() {
+    public Set<User> getAllUsers() {
         return new LinkedHashSet<>(usersdb.values());
-    }*/
+    }
     
 
     
